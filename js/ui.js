@@ -1,8 +1,12 @@
 "use strict";
-
-let addBookHandler;
-let removeBookHandler;
-let borrowBookHandler;
+let onAddBook;
+let onRemoveBook;
+let onBorrowBook;
+let onReturnBook;
+let onSearchBook;
+let onFilterBorrowed;
+let onFilterAll;
+let onFilterAvailable;
 // card parednt container
 const bookContainer = document.getElementById("books-container");
 const addBookFormContainer = document.getElementById("add-book-form");
@@ -10,7 +14,12 @@ const titleInput = document.getElementById("title-input");
 const authorInput = document.getElementById("author-input");
 const isbnInput = document.getElementById("isbn-input");
 const genreInput = document.getElementById("genre-input");
-
+const searchContainer = document.getElementById("search-form");
+const searchtTitleInput = document.getElementById("search-input");
+const filterBorrowedBtn = document.getElementById("filter-borrowed-btn");
+const filterAvailableBtn = document.getElementById("filter-available-btn");
+const filterEbookBtn = document.getElementById("filter-ebook-btn");
+const filterAllBtn = document.getElementById("filter-all-btn");
 // render function
 export default function renderBooks(books) {
   // removing previous DOM elements which was panted or render back
@@ -22,7 +31,6 @@ export default function renderBooks(books) {
     // Adding class to it
     card.classList.add("card");
     // Creating Html
-
     card.innerHTML = `
       <h2>${book.title}</h2>
       <p><strong>Author : </strong> ${book.author}</p>
@@ -30,7 +38,6 @@ export default function renderBooks(books) {
       <p><strong>ISBN : </strong> ${book.isbn}</p>
       <p><strong>Status : </strong> ${book.available ? "Avaialble" : "Borrowed"}</p>
       <p><strong>Borrowed : </strong> ${book.borrowedBy ?? "Nobody"}</p>
-
       <button  class="borrow-btn"  ${!book.available ? "disabled" : ""} >Borrow</button>
       <button class="return-btn" >Return</button>
       <button class="remove-btn">Remove</button>
@@ -39,22 +46,30 @@ export default function renderBooks(books) {
     bookContainer.appendChild(card);
     // REMOVING BOOK
     const removeBtn = card.querySelector(".remove-btn");
+    //Event Listener
     removeBtn.addEventListener("click", function () {
-      removeBookHandler(book.isbn);
+      onRemoveBook(book.isbn);
     });
     // BORROWING BOOK
     const borrowBtn = card.querySelector(".borrow-btn");
+    //Event Listener
     borrowBtn.addEventListener("click", function () {
       const user = prompt("Please Enter you name");
       if (!user) {
         alert("Retry with Entering your name");
         return;
       }
-      borrowBookHandler(book.isbn, user);
+      onBorrowBook(book.isbn, user);
+    });
+    //Return book
+    const returnBtn = card.querySelector(".return-btn");
+    //Event Listener
+    returnBtn.addEventListener("click", function () {
+      onReturnBook(book.isbn);
     });
   });
 }
-function addBook(e) {
+addBookFormContainer.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const title = titleInput.value;
@@ -65,19 +80,50 @@ function addBook(e) {
     alert("Please Fill out the form");
     return;
   }
-  addBookHandler(title, author, isbn, genre);
+  onAddBook(title, author, isbn, genre);
   addBookFormContainer.reset();
-}
-addBookFormContainer.addEventListener("submit", addBook);
+});
+searchContainer.addEventListener("submit", function (e) {
+  e.preventDefault();
+  // Reading the entered input
+  const textInput = searchtTitleInput.value;
+  const text = textInput.trim();
 
+  console.log(text);
+  // Resetting the input field back to ""
+  onSearchBook(text);
+  searchContainer.reset();
+});
+filterBorrowedBtn.addEventListener("click", function () {
+  return onFilterBorrowed();
+});
+filterAllBtn.addEventListener("click", function () {
+  return onFilterAll();
+});
+filterAvailableBtn.addEventListener("click", function () {
+  return onFilterAvailable();
+});
 export function bindAddBook(handler) {
-  addBookHandler = handler;
+  onAddBook = handler;
 }
-
 export function bindRemoveBook(handler) {
-  removeBookHandler = handler;
+  onRemoveBook = handler;
 }
-
 export function bindBorrowBook(handler) {
-  borrowBookHandler = handler;
+  onBorrowBook = handler;
+}
+export function bindReturnBook(handler) {
+  onReturnBook = handler;
+}
+export function bindSearchBook(handler) {
+  onSearchBook = handler;
+}
+export function bindFilterBorrowed(handler) {
+  onFilterBorrowed = handler;
+}
+export function bindFilterAll(handler) {
+  onFilterAll = handler;
+}
+export function bindFilterAvailable(handler) {
+  onFilterAvailable = handler;
 }

@@ -4,6 +4,11 @@ import renderBooks, {
   bindAddBook,
   bindRemoveBook,
   bindBorrowBook,
+  bindReturnBook,
+  bindSearchBook,
+  bindFilterBorrowed,
+  bindFilterAll,
+  bindFilterAvailable,
 } from "./ui.js";
 
 const book1 = new Book(
@@ -45,6 +50,11 @@ renderBooks(library.books);
 bindAddBook(onAddBook);
 bindRemoveBook(onRemoveBook);
 bindBorrowBook(onBorrowBook);
+bindReturnBook(onReturnBook);
+bindSearchBook(onSearchBookTitle);
+bindFilterBorrowed(onFilterBorrowed);
+bindFilterAll(onFilterAll);
+bindFilterAvailable(onFilterAvailable);
 
 function onAddBook(title, author, isbn, genre) {
   const newBook = new Book(title, author, isbn, genre);
@@ -58,4 +68,29 @@ function onRemoveBook(isbn) {
 function onBorrowBook(isbn, user) {
   library.borrowBook(isbn, user);
   renderBooks(library.books);
+}
+function onReturnBook(isbn) {
+  library.returnBook(isbn);
+  renderBooks(library.books);
+}
+
+function onSearchBookTitle(text) {
+  if (text === "") {
+    renderBooks(library.books);
+    return;
+  }
+
+  const result = library.searchBookTitle(text);
+  renderBooks(result);
+}
+
+function onFilterBorrowed() {
+  renderBooks(library.borrowedBooks());
+}
+
+function onFilterAll() {
+  renderBooks(library.books);
+}
+function onFilterAvailable() {
+  renderBooks(library.availableBooks());
 }

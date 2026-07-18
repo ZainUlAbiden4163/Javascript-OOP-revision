@@ -48,3 +48,12 @@ Library.prototype.borrowedBooks = function () {
   const result = this.books.filter((book) => !book.available);
   return result;
 };
+Library.prototype.returnBook = function (isbn) {
+  const bookToReturn = this.findBook(isbn);
+
+  if (!bookToReturn) {
+    return "Book not found";
+  }
+
+  return bookToReturn.returnBook();
+};
