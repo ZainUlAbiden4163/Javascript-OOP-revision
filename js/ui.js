@@ -1,7 +1,8 @@
 "use strict";
 
 let addBookHandler;
-
+let removeBookHandler;
+let borrowBookHandler;
 // card parednt container
 const bookContainer = document.getElementById("books-container");
 const addBookFormContainer = document.getElementById("add-book-form");
@@ -30,14 +31,27 @@ export default function renderBooks(books) {
       <p><strong>Status : </strong> ${book.available ? "Avaialble" : "Borrowed"}</p>
       <p><strong>Borrowed : </strong> ${book.borrowedBy ?? "Nobody"}</p>
 
-      <button class="borrow-btn">Borrow</button>
-      <button class="return-btn">Return</button>
+      <button  class="borrow-btn"  ${!book.available ? "disabled" : ""} >Borrow</button>
+      <button class="return-btn" >Return</button>
       <button class="remove-btn">Remove</button>
-
     `;
     // Appending the created HTML ABOVE in the card parent container
-
     bookContainer.appendChild(card);
+    // REMOVING BOOK
+    const removeBtn = card.querySelector(".remove-btn");
+    removeBtn.addEventListener("click", function () {
+      removeBookHandler(book.isbn);
+    });
+    // BORROWING BOOK
+    const borrowBtn = card.querySelector(".borrow-btn");
+    borrowBtn.addEventListener("click", function () {
+      const user = prompt("Please Enter you name");
+      if (!user) {
+        alert("Retry with Entering your name");
+        return;
+      }
+      borrowBookHandler(book.isbn, user);
+    });
   });
 }
 function addBook(e) {
@@ -58,4 +72,12 @@ addBookFormContainer.addEventListener("submit", addBook);
 
 export function bindAddBook(handler) {
   addBookHandler = handler;
+}
+
+export function bindRemoveBook(handler) {
+  removeBookHandler = handler;
+}
+
+export function bindBorrowBook(handler) {
+  borrowBookHandler = handler;
 }

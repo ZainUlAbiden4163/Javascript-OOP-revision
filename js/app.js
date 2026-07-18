@@ -1,6 +1,10 @@
 import Book from "./Book.js";
 import Library from "./Library.js";
-import renderBooks, { bindAddBook } from "./ui.js";
+import renderBooks, {
+  bindAddBook,
+  bindRemoveBook,
+  bindBorrowBook,
+} from "./ui.js";
 
 const book1 = new Book(
   "The Alchemist",
@@ -37,10 +41,21 @@ const library = new Library("Central Library", [
 ]);
 
 renderBooks(library.books);
+
 bindAddBook(onAddBook);
+bindRemoveBook(onRemoveBook);
+bindBorrowBook(onBorrowBook);
 
 function onAddBook(title, author, isbn, genre) {
   const newBook = new Book(title, author, isbn, genre);
   library.addBook(newBook);
+  renderBooks(library.books);
+}
+function onRemoveBook(isbn) {
+  library.removeBook(isbn);
+  renderBooks(library.books);
+}
+function onBorrowBook(isbn, user) {
+  library.borrowBook(isbn, user);
   renderBooks(library.books);
 }
